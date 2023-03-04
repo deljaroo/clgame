@@ -2,29 +2,31 @@
 import os, random
 os.system("cls")
 
+this_dir = os.path.dirname(__file__)
+
 master_list_of_first_names = []
-with open(r"C:\Users\Joel\programming class\first names.csv", 'r') as opened_file:
+with open(this_dir + r"\first names.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_first_names.append(split_line[1])
 		master_list_of_first_names.append(split_line[4])
 master_list_of_last_names = []
-with open(r"C:\Users\Joel\programming class\last names.csv", 'r') as opened_file:
+with open(this_dir + r"\last names.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_last_names.append(split_line[1])
 master_list_of_treasure_prefixes = []
-with open(r"C:\Users\Joel\programming class\prefix.csv", 'r') as opened_file:
+with open(this_dir + r"\prefix.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_treasure_prefixes.append({'name': split_line[0], 'modifier': float(split_line[1].strip())})
 master_list_of_treasure_bases = []
-with open(r"C:\Users\Joel\programming class\base.csv", 'r') as opened_file:
+with open(this_dir + r"\base.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_treasure_bases.append({'name': split_line[0], 'base value': float(split_line[1].strip())})
 master_list_of_treasure_suffixes = []
-with open(r"C:\Users\Joel\programming class\suffix.csv", 'r') as opened_file:
+with open(this_dir + r"\suffix.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_treasure_suffixes.append({'name': split_line[0], 'multiplier': float(split_line[1].strip())})
