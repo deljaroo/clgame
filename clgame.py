@@ -13,6 +13,22 @@ with open(r"C:\Users\Joel\programming class\last names.csv", 'r') as opened_file
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_last_names.append(split_line[1])
+master_list_of_treasure_prefixes = []
+with open(r"C:\Users\Joel\programming class\prefix.csv", 'r') as opened_file:
+	for line in opened_file:
+		split_line = line.split(',')
+		master_list_of_treasure_prefixes.append({'name': split_line[0], 'modifier': float(split_line[1].strip())})
+master_list_of_treasure_bases = []
+with open(r"C:\Users\Joel\programming class\base.csv", 'r') as opened_file:
+	for line in opened_file:
+		split_line = line.split(',')
+		master_list_of_treasure_bases.append({'name': split_line[0], 'base value': float(split_line[1].strip())})
+master_list_of_treasure_suffixes = []
+with open(r"C:\Users\Joel\programming class\suffix.csv", 'r') as opened_file:
+	for line in opened_file:
+		split_line = line.split(',')
+		master_list_of_treasure_suffixes.append({'name': split_line[0], 'multiplier': float(split_line[1].strip())})
+
 
 def multiplyArrayByNumber(array, number):
 	result = []
@@ -43,7 +59,12 @@ def inPit(location_vector):
 def randomName():
 	return random.choice(master_list_of_first_names) + " " + random.choice(master_list_of_last_names)
 def getTreasure():
-	return ("", 0)
+	picked_prefix = random.choice(master_list_of_treasure_prefixes)
+	picked_base = random.choice(master_list_of_treasure_bases)
+	picked_suffix = random.choice(master_list_of_treasure_suffixes)
+	composed_name = picked_prefix['name'] + " " + picked_base['name'] + " " + picked_suffix['name']
+	value = abs(picked_base['base value'] + picked_prefix['modifier']) * picked_suffix['multiplier']
+	return (composed_name, value)
 
 def go(direction_vector, speed):
 	if speed==0:
@@ -61,19 +82,24 @@ def goDig():
 	if what_you_dug_up==0: # found body
 		GameData.bodies_found += 1
 		description = randomName()
+		GameData.death_note.append(description)
 		what_to_say = "You found the body of " + description
 	if what_you_dug_up==1: # found treasure
 		description, value = getTreasure()
 		GameData.net_worth += value
-		what_to_say = "You found " + description
+		what_to_say = f"You found {description} (value: {value})"
 	input(what_to_say + " (Press Enter)")
 	GameData.dug_up_places.add((GameData.player_x, GameData.player_y))
 def goWait():
 	input("good job? (Press Enter)")
 
-def drawMap():
+def drawMapAndNames():
 	final_map = ""
 	split_map = GameData.game_map.split('\n')
+	widest_line_size = 0
+	for line in split_map:
+		if len(line) > widest_line_size:
+			widest_line_size = len(line)
 	for y in range(len(split_map)):
 		for x in range(len(split_map[y])):
 			if (x, y) == (GameData.player_x, GameData.player_y):
@@ -82,6 +108,9 @@ def drawMap():
 				final_map += GameData.dug_icon
 			else:
 				final_map += split_map[y][x]
+		if len(GameData.death_note) > y:
+			final_map += " " * (widest_line_size - x)
+			final_map += GameData.death_note[y]
 		final_map += '\n'
 	print(final_map)
 
@@ -122,6 +151,7 @@ class GameData:
 		'west': (-1, 0)
 	}
 	dug_up_places = set()
+	death_note = []
 
 alive = True
 while alive:
@@ -131,7 +161,7 @@ while alive:
 	player_icon = GameData.player_icon
 	things_you_can_do = GameData.things_you_can_do
 	how_many_lines = 0
-	drawMap()
+	drawMapAndNames()
 	print(GameData.area_desc)
 	player_input = input("What's next? ")
 	player_input = player_input.lower()
