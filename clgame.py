@@ -1,32 +1,32 @@
 #input("█░▒▓┐└─║║╗╝╚╔═┼")
 import os, random
-os.system("cls")
+os.system("cls" if os.name=="nt" else "clear")
 
 this_dir = os.path.dirname(__file__)
 
 master_list_of_first_names = []
-with open(this_dir + r"\first names.csv", 'r') as opened_file:
+with open(this_dir + "/first names.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_first_names.append(split_line[1])
 		master_list_of_first_names.append(split_line[4])
 master_list_of_last_names = []
-with open(this_dir + r"\last names.csv", 'r') as opened_file:
+with open(this_dir + "/last names.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_last_names.append(split_line[1])
 master_list_of_treasure_prefixes = []
-with open(this_dir + r"\prefix.csv", 'r') as opened_file:
+with open(this_dir + "/prefix.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_treasure_prefixes.append({'name': split_line[0], 'modifier': float(split_line[1].strip())})
 master_list_of_treasure_bases = []
-with open(this_dir + r"\base.csv", 'r') as opened_file:
+with open(this_dir + "/base.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_treasure_bases.append({'name': split_line[0], 'base value': float(split_line[1].strip())})
 master_list_of_treasure_suffixes = []
-with open(this_dir + r"\suffix.csv", 'r') as opened_file:
+with open(this_dir + "/suffix.csv", 'r') as opened_file:
 	for line in opened_file:
 		split_line = line.split(',')
 		master_list_of_treasure_suffixes.append({'name': split_line[0], 'multiplier': float(split_line[1].strip())})
@@ -177,7 +177,7 @@ while alive:
 		print("I don't know what that means")
 		input("Press enter to continue")
 
-	os.system('cls')
+	os.system("cls" if os.name=="nt" else "clear")
 
 print("you've died; sorry; game over")
 
