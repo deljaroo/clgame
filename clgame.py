@@ -136,7 +136,8 @@ class GameData:
 	net_worth = 0
 	player_icon = "┼"
 	dug_icon = "▒"
-	speed = 3
+	speed = 1
+	facing = 'north'
 	area_desc = "An open field in the veldt.  Grass as far as the eyes can see."
 	things_you_can_do = {
 		'north': go,
@@ -170,6 +171,7 @@ while alive:
 	if player_input in things_you_can_do:
 		function_to_do = things_you_can_do.get(player_input)
 		if function_to_do is go:
+			GameData.facing = player_input.lower()
 			function_to_do(GameData.how_directions_work.get(player_input), GameData.speed)
 		else:
 			function_to_do()
