@@ -68,6 +68,27 @@ def getTreasure():
 	value = abs(picked_base['base value'] + picked_prefix['modifier']) * picked_suffix['multiplier']
 	return (composed_name, value)
 
+def playerDeath():
+	GameData.alive = False
+def rotateFacing(current_direction, times):
+	if times==0:
+		return current_direction
+	next_direction = {
+		'north': 'east',
+		'east': 'south',
+		'south': 'west',
+		'west': 'north'
+	}
+	return rotateFacing(next_direction.get(current_direction), times-1)
+def moveAfterDig(direction):
+	direction_vector = GameData.how_directions_work.get(direction)
+	location_vector = (GameData.player_x + direction_vector[0], GameData.player_y + direction_vector[1])
+	if outOfBounds(location_vector) or inPit(location_vector):
+		return False
+	GameData.player_x += direction_vector[0]
+	GameData.player_y += direction_vector[1]
+	return True
+
 def go(direction_vector, speed):
 	if speed==0:
 		return False
@@ -92,6 +113,14 @@ def goDig():
 		what_to_say = f"You found {description} (value: {value})"
 	input(what_to_say + " (Press Enter)")
 	GameData.dug_up_places.add((GameData.player_x, GameData.player_y))
+	for times in range(5): # 0, 1, 2, 3, 4
+		if times==4:
+			playerDeath()
+			break
+		did_it_work = moveAfterDig(rotateFacing(GameData.facing, times))
+		if did_it_work:
+			break
+	
 def goWait():
 	input("good job? (Press Enter)")
 
@@ -136,7 +165,8 @@ class GameData:
 	net_worth = 0
 	player_icon = "┼"
 	dug_icon = "▒"
-	speed = 3
+	speed = 1
+	facing = 'north'
 	area_desc = "An open field in the veldt.  Grass as far as the eyes can see."
 	things_you_can_do = {
 		'north': go,
@@ -154,9 +184,9 @@ class GameData:
 	}
 	dug_up_places = set()
 	death_note = []
+	alive = True
 
-alive = True
-while alive:
+while GameData.alive:
 	game_map = GameData.game_map
 	player_y = GameData.player_y
 	player_x = GameData.player_x
@@ -170,6 +200,7 @@ while alive:
 	if player_input in things_you_can_do:
 		function_to_do = things_you_can_do.get(player_input)
 		if function_to_do is go:
+			GameData.facing = player_input.lower()
 			function_to_do(GameData.how_directions_work.get(player_input), GameData.speed)
 		else:
 			function_to_do()
@@ -180,13 +211,3 @@ while alive:
 	os.system("cls" if os.name=="nt" else "clear")
 
 print("you've died; sorry; game over")
-
-# display the gamestate in our "UI" -------------
-
-# ask them what to do again -----------------
-
-# evaluate what the player says to do
-
-# change the gamestate based on that evaluation
-
-# go back to top ---------------------
