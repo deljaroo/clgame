@@ -1,4 +1,5 @@
 #input("█░▒▓┐└─║║╗╝╚╔═┼")
+
 import os, random
 os.system("cls" if os.name=="nt" else "clear")
 
