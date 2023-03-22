@@ -1,0 +1,2 @@
+for windows:
+pyinstaller -F --add-data "*.csv;." clgame.py
