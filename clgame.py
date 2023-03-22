@@ -69,7 +69,7 @@ def getTreasure():
 	return (composed_name, value)
 
 def playerDeath():
-	GameData.alive = False
+	GameData.state = 'dead'
 def rotateFacing(current_direction, times):
 	if times==0:
 		return current_direction
@@ -106,11 +106,13 @@ def goDig():
 		GameData.bodies_found += 1
 		description = randomName()
 		GameData.death_note.append(description)
+		if len(GameData.death_note) >= 10:
+			GameData.state = 'audit'
 		what_to_say = "You found the body of " + description
 	if what_you_dug_up==1: # found treasure
 		description, value = getTreasure()
 		GameData.net_worth += value
-		what_to_say = f"You found {description} (value: {value})"
+		what_to_say = f"You found {description}"
 	input(what_to_say + " (Press Enter)")
 	GameData.dug_up_places.add((GameData.player_x, GameData.player_y))
 	for times in range(5): # 0, 1, 2, 3, 4
@@ -184,9 +186,9 @@ class GameData:
 	}
 	dug_up_places = set()
 	death_note = []
-	alive = True
+	state = 'going'
 
-while GameData.alive:
+while GameData.state=='going':
 	game_map = GameData.game_map
 	player_y = GameData.player_y
 	player_x = GameData.player_x
@@ -210,4 +212,26 @@ while GameData.alive:
 
 	os.system("cls" if os.name=="nt" else "clear")
 
-print("you've died; sorry; game over")
+if GameData.state=='audit':
+	print("ALL YOUR TREASURE HUNTINGS HAS ATTRACTED AUDITORS!!!!")
+	print("hope you kept all your receipts")
+	getting_audit_answer = True
+	answer = 0
+	while getting_audit_answer:
+		answer = input("how much is all this worth? ")
+		try:
+			answer = float(answer)
+			getting_audit_answer = False
+		except ValueError:
+			print("take this seriously!")
+	if abs(GameData.net_worth - answer) / GameData.net_worth <= 0.05:
+		print("okay, you're safe this time")
+	else:
+		input("it's actually " + str(GameData.net_worth) + "!")
+		print("capital punishment for tax evasion!")
+		GameData.state = 'dead'
+
+if GameData.state=='dead':
+	print("you've died; sorry; game over")
+else:
+	print("you've won with this much treasure:", GameData.net_worth)
